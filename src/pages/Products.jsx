@@ -1,25 +1,39 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from "react";
 
-const Products = () => {
+function Products() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    axios.get('https://api.example.com/products')
-      .then((response) => setProducts(response.data))
-      .catch((error) => console.error('Error fetching products:', error));
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("https://api.escuelajs.co/api/v1/products");
+        const result = await response.json();
+        setProducts(result); // Set the fetched products data
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
   }, []);
 
   return (
     <div>
-      <h1 className="text-xl font-bold">Our Products</h1>
-      <ul className="mt-4">
+      <h1 className="text-3x1 mb-6">Products</h1>
+      <div className="grid grid-cols-3 gap-4">
         {products.map((product) => (
-          <li key={product.id} className="border p-2 mb-2">{product.name}</li>
+          <div key={product.id} className="p-2 border-2 rounded-md">
+            <img
+              src={product.images[0]} // Access the first image of the product
+              alt={product.title}
+              className="w-full h-auto rounded-md"
+            />
+            <div className="truncate mt-2 font-bold">{product.title}</div>
+            <div className="mt-1 text-gray-600">${product.price}</div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
-};
+}
 
 export default Products;
